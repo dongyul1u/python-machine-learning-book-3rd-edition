@@ -87,7 +87,7 @@ from sklearn.ensemble import AdaBoostClassifier
 
 
 
-
+# theroy: https://en.wikipedia.org/wiki/Ensemble_learning#Error_of_an_ensemble
 def ensemble_error(n_classifier, error):
     k_start = int(math.ceil(n_classifier / 2.))
     probs = [comb(n_classifier, k) * error**k * (1-error)**(n_classifier - k)
@@ -240,7 +240,7 @@ class MajorityVoteClassifier(BaseEstimator,
         ----------
         maj_vote : array-like, shape = [n_examples]
             Predicted class labels.
-            
+
         """
         if self.vote == 'probability':
             maj_vote = np.argmax(self.predict_proba(X), axis=1)
@@ -302,7 +302,8 @@ X, y = iris.data[50:, [1, 2]], iris.target[50:]
 le = LabelEncoder()
 y = le.fit_transform(y)
 
-X_train, X_test, y_train, y_test =       train_test_split(X, y, 
+X_train, X_test, y_train, y_test =\
+       train_test_split(X, y, 
                         test_size=0.5, 
                         random_state=1,
                         stratify=y)
@@ -369,7 +370,8 @@ for clf, label in zip(all_clf, clf_labels):
 
 colors = ['black', 'orange', 'blue', 'green']
 linestyles = [':', '--', '-.', '-']
-for clf, label, clr, ls         in zip(all_clf,
+for clf, label, clr, ls \
+        in zip(all_clf,
                clf_labels, colors, linestyles):
 
     # assuming the label of the positive class is 1
@@ -427,24 +429,24 @@ f, axarr = plt.subplots(nrows=2, ncols=2,
 for idx, clf, tt in zip(product([0, 1], [0, 1]),
                         all_clf, clf_labels):
     clf.fit(X_train_std, y_train)
-    
+
     Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
     Z = Z.reshape(xx.shape)
 
     axarr[idx[0], idx[1]].contourf(xx, yy, Z, alpha=0.3)
-    
+
     axarr[idx[0], idx[1]].scatter(X_train_std[y_train==0, 0], 
                                   X_train_std[y_train==0, 1], 
                                   c='blue', 
                                   marker='^',
                                   s=50)
-    
+
     axarr[idx[0], idx[1]].scatter(X_train_std[y_train==1, 0], 
                                   X_train_std[y_train==1, 1], 
                                   c='green', 
                                   marker='o',
                                   s=50)
-    
+
     axarr[idx[0], idx[1]].set_title(tt)
 
 plt.text(-3.5, -5., 
@@ -474,7 +476,7 @@ params = {'decisiontreeclassifier__max_depth': [1, 2],
 grid = GridSearchCV(estimator=mv_clf,
                     param_grid=params,
                     cv=10,
-                    iid=False,
+                    #iid=False,
                     scoring='roc_auc')
 grid.fit(X_train, y_train)
 
@@ -571,7 +573,8 @@ X = df_wine[['Alcohol', 'OD280/OD315 of diluted wines']].values
 le = LabelEncoder()
 y = le.fit_transform(y)
 
-X_train, X_test, y_train, y_test =            train_test_split(X, y, 
+X_train, X_test, y_train, y_test =\
+            train_test_split(X, y, 
                              test_size=0.2, 
                              random_state=1,
                              stratify=y)
@@ -584,7 +587,7 @@ tree = DecisionTreeClassifier(criterion='entropy',
                               max_depth=None,
                               random_state=1)
 
-bag = BaggingClassifier(base_estimator=tree,
+bag = BaggingClassifier(estimator=tree,
                         n_estimators=500, 
                         max_samples=1.0, 
                         max_features=1.0, 
@@ -662,7 +665,7 @@ plt.text(0, -0.2,
          fontsize=12,
          transform=axarr[1].transAxes)
 
-plt.savefig('images/07_08.png', dpi=300, bbox_inches='tight')
+#plt.savefig('images/07_08.png', dpi=300, bbox_inches='tight')
 plt.show()
 
 
@@ -688,7 +691,7 @@ tree = DecisionTreeClassifier(criterion='entropy',
                               max_depth=1,
                               random_state=1)
 
-ada = AdaBoostClassifier(base_estimator=tree,
+ada = AdaBoostClassifier(estimator=tree,
                          n_estimators=500, 
                          learning_rate=0.1,
                          random_state=1)
